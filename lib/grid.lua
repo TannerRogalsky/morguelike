@@ -6,9 +6,10 @@ function Grid:initialize(width, height)
 
   for i = 1, width do
     self[i] = {}
-    for j = 1, height do
-      self[i][j] = nil
-    end
+    -- the inner loop to set nils isn't necessary
+    -- for j = 1, height do
+    --   self[i][j] = nil
+    -- end
   end
 
   self.width = width
@@ -17,25 +18,36 @@ function Grid:initialize(width, height)
   self.orientation = 0
 end
 
-function Grid:each(x, y, width, height, callback)
+-- TODO I don't actually just this iterator, double check it all
+-- particularly lines 28, 33, 34
+function Grid:each(x, y, width, height)
   x = x or 1
   y = y or 1
   width = width or self.width
   height = height or self.height
-  assert(type(callback) == "function")
+  width, height = width - 1, height - 1
 
-  -- even though it sort of works, don't try to iterate outside of the grid bounds
-  if x < 1 then x = 1
-  elseif y < 1 then y = 1
-  elseif x + width > self.width then width = self.width - x
-  elseif y + height > self.height then height = self.height - y
-  end
+  -- don't try to iterate outside of the grid bounds
+  if x < 1 then x = 1 end
+  if y < 1 then y = 1 end
+  if x + width > self.width then width = self.width - x end
+  if y + height > self.height then height = self.height - y end
 
-  for i = x, width do
-    for j = y, height do
-      callback(self[i][j], i, j)
+  local function iterator(state)
+    while state.childIndex <= x + width do
+      local child           = self[state.childIndex]
+      state.grandChildIndex = state.grandChildIndex + 1
+      if state.grandChildIndex > y + height then
+        state.childIndex = state.childIndex + 1
+        state.grandChildIndex = y - 1
+      else
+        return state.childIndex, state.grandChildIndex, child[state.grandChildIndex]
+      end
     end
   end
+
+  return iterator, {childIndex = x, grandChildIndex = y - 1}
+end
 
 function Grid:rotate(angle)
   return self:rotate_to(self.orientation + angle)
@@ -69,6 +81,7 @@ function Grid:get(x, y, orientation)
     return self[#self - y + 1][x]
   end
 end
+Grid.g = Grid.get
 
 function Grid:set(x, y, value, orientation)
   if self:out_of_bounds(x, y) then
@@ -89,6 +102,7 @@ function Grid:set(x, y, value, orientation)
     self[#self - y + 1][x] = value
   end
 end
+Grid.s = Grid.set
 
 function Grid:__tostring()
   local strings, result = {}, "    "
