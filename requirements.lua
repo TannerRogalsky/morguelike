@@ -25,6 +25,7 @@ COLORS = require 'lib/colors'
 tween = require 'lib/tween'
 beholder = require 'lib/beholder'
 Grid = require 'lib/grid'
+AStar = require 'lib/astar'
 
 require 'base'
 require 'game'
