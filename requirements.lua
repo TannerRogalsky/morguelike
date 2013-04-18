@@ -30,6 +30,8 @@ AStar = require 'lib/astar'
 require 'base'
 require 'game'
 require 'stats_panel'
+require 'map'
+require 'map_tile'
 
 local function require_all(directory)
   local lfs = love.filesystem
