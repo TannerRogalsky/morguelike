@@ -18,8 +18,7 @@ function Grid:initialize(width, height)
   self.orientation = 0
 end
 
--- TODO I don't actually just this iterator, double check it all
--- particularly lines 28, 33, 34
+-- TODO I don't actually trust this iterator, double check it all
 function Grid:each(x, y, width, height)
   x = x or 1
   y = y or 1
@@ -28,8 +27,17 @@ function Grid:each(x, y, width, height)
   width, height = width - 1, height - 1
 
   -- don't try to iterate outside of the grid bounds
-  if x < 1 then x = 1 end
-  if y < 1 then y = 1 end
+  local x_diff, y_diff = 0, 0
+  if x < 1 then
+    x_diff = 1 - x
+    x = 1
+  end
+  if y < 1 then
+    y_diff = 1 - y
+    y = 1
+  end
+  -- if you bump up x or y, bump down the width or height the same amount
+  width, height = width - x_diff, height - y_diff
   if x + width > self.width then width = self.width - x end
   if y + height > self.height then height = self.height - y end
 
