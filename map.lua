@@ -10,7 +10,7 @@ function Map:initialize()
 
   local function adjacency(tile)
     local adjacent = {}
-    for x, y, neighbor in self.grid:each(tile.x - 1, tile.y - 1, 3, 3) do
+    for x, y, neighbor in tile.parent:each(tile.x - 1, tile.y - 1, 3, 3) do
       if not(x == tile.x and y == tile.y) then
         table.insert(adjacent, neighbor)
       end
@@ -36,9 +36,9 @@ end
 function Map:update(dt)
 end
 
-function Map:render()
+function Map:render(offset_x, offset_y)
   for x, y, tile in self.grid:each() do
-    tile:render(x * 10, y * 10)
+    tile:render((x - 1) * 10 + offset_x, (y - 1) * 10 + offset_y)
   end
 end
 
