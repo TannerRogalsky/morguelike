@@ -2,7 +2,6 @@ local Main = Game:addState('Main')
 
 function Main:enteredState()
   self.map = Map:new()
-
 end
 
 function Main:update(dt)
@@ -26,11 +25,11 @@ function Main:mousereleased(x, y, button)
 end
 
 function Main:keypressed(key, unicode)
-  self.camera:setScale(0.5, 0.5)
+  self.map:keypressed(key, unicode)
 end
 
 function Main:keyreleased(key, unicode)
-  self.camera:setScale(1, 1)
+  self.map:keyreleased(key, unicode)
 end
 
 function Main:joystickpressed(joystick, button)
