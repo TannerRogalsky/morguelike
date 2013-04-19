@@ -1,9 +1,15 @@
 Map = class('Map', Base)
 
-function Map:initialize()
+function Map:initialize(x, y, width, height, tile_width, tile_height)
   Base.initialize(self)
+  local function is_num(v) return type(v) == "number" end
+  assert(is_num(x) and is_num(y) and is_num(width) and is_num(height))
+  assert(is_num(tile_width) and is_num(tile_width))
+  self.x, self.y = x, y
+  self.width, self.height = width, height
+  self.tile_width, self.tile_height = tile_width, tile_height
 
-  self.grid = Grid:new(30, 30)
+  self.grid = Grid:new(self.width, self.height)
   for x,y,tile in self.grid:each() do
     self.grid[x][y] = MapTile:new(self, x, y)
   end
@@ -26,8 +32,8 @@ function Map:initialize()
     return math.abs(goal.x - from.x) + math.abs(goal.y - from.y)
   end
 
-  local astar = AStar:new(adjacency, cost, distance)
-  local path = astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
+  self.grid_astar = AStar:new(adjacency, cost, distance)
+  local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
   for index,tile in ipairs(path) do
     tile.color = COLORS.red
   end
@@ -40,25 +46,43 @@ end
 function Map:update(dt)
 end
 
-function Map:render(offset_x, offset_y)
+function Map:render()
   for x, y, tile in self.grid:each() do
-    tile:render((x - 1) * 10 + offset_x, (y - 1) * 10 + offset_y)
+    tile:render(self:grid_to_world_coords(x, y))
   end
 end
 
-function Map:mousepressed(x, y, button)
+function Map:grid_to_world_coords(x, y)
+  return (x - 1) * self.tile_width + self.x, (y - 1) * self.tile_height + self.y
 end
 
-function Map:mousereleased(x, y, button)
+function Map.keypressed_up(self)
+  self.player:move(0, -1)
+  game.camera:move(0 * self.tile_width, -1 * self.tile_height)
+end
+
+function Map.keypressed_right(self)
+  self.player:move(1, 0)
+  game.camera:move(1 * self.tile_width, 0 * self.tile_height)
+end
+
+function Map.keypressed_down(self)
+  self.player:move(0, 1)
+  game.camera:move(0 * self.tile_width, 1 * self.tile_height)
+end
+
+function Map.keypressed_left(self)
+  self.player:move(-1, 0)
+  game.camera:move(-1 * self.tile_width, 0 * self.tile_height)
 end
 
 local control_map = {
   keyboard = {
     on_press = {
-      up =    function(self) self.player:move(0, -1) end,
-      right = function(self) self.player:move(1, 0) end,
-      down =  function(self) self.player:move(0, 1) end,
-      left =  function(self) self.player:move(-1, 0) end
+      up =    Map.keypressed_up,
+      right = Map.keypressed_right,
+      down =  Map.keypressed_down,
+      left =  Map.keypressed_left
     },
     on_release = {
     },
@@ -66,6 +90,12 @@ local control_map = {
     }
   }
 }
+
+function Map:mousepressed(x, y, button)
+end
+
+function Map:mousereleased(x, y, button)
+end
 
 function Map:keypressed(key, unicode)
   local action = control_map.keyboard.on_press[key]

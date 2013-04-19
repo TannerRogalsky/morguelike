@@ -1,7 +1,7 @@
 local Main = Game:addState('Main')
 
 function Main:enteredState()
-  self.map = Map:new()
+  self.map = Map:new(0, 0, 70, 30, 10, 10)
 end
 
 function Main:update(dt)
@@ -10,10 +10,10 @@ end
 function Main:render()
   self.camera:set()
 
-  self.map:render(100, 100)
+  self.map:render()
 
-  g.setColor(COLORS.white:rgb())
-  g.print("test", 100, 100)
+  -- g.setColor(COLORS.white:rgb())
+  -- g.print("test", 100, 100)
 
   self.camera:unset()
 end
