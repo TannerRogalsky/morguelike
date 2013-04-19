@@ -7,6 +7,7 @@ function MapTile:initialize(parent, x, y)
   self.y = y
 
   self.color = COLORS.green
+  self.content = {}
 end
 
 function MapTile:update(dt)
@@ -17,6 +18,10 @@ function MapTile:render(x, y)
   g.rectangle("fill", x, y, 10, 10)
   g.setColor(COLORS.black:rgb())
   g.rectangle("line", x, y, 10, 10)
+
+  for _,content in pairs(self.content) do
+    content:render(x, y)
+  end
 end
 
 function MapTile:mousepressed(x, y, button)
