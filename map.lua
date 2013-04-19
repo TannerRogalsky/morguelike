@@ -10,7 +10,7 @@ function Map:initialize()
 
   local function adjacency(tile)
     local adjacent = {}
-    for x, y, neighbor in tile.parent:each(tile.x - 1, tile.y - 1, 3, 3) do
+    for x, y, neighbor in tile.parent.grid:each(tile.x - 1, tile.y - 1, 3, 3) do
       if not(x == tile.x and y == tile.y) then
         table.insert(adjacent, neighbor)
       end
@@ -23,7 +23,7 @@ function Map:initialize()
   end
 
   local function distance(from, goal)
-    return 0
+    return math.abs(goal.x - from.x) + math.abs(goal.y - from.y)
   end
 
   local astar = AStar:new(adjacency, cost, distance)
@@ -31,6 +31,10 @@ function Map:initialize()
   for index,tile in ipairs(path) do
     tile.color = COLORS.red
   end
+
+
+  self.player = MapEntity:new(self, 15, 15)
+  self.grid:g(15, 15).content[self.player.id] = self.player
 end
 
 function Map:update(dt)
@@ -48,7 +52,24 @@ end
 function Map:mousereleased(x, y, button)
 end
 
+local control_map = {
+  keyboard = {
+    on_press = {
+      up =    function(self) self.player:move(0, -1) end,
+      right = function(self) self.player:move(1, 0) end,
+      down =  function(self) self.player:move(0, 1) end,
+      left =  function(self) self.player:move(-1, 0) end
+    },
+    on_release = {
+    },
+    on_update = {
+    }
+  }
+}
+
 function Map:keypressed(key, unicode)
+  local action = control_map.keyboard.on_press[key]
+  if type(action) == "function" then action(self) end
 end
 
 function Map:keyreleased(key, unicode)
