@@ -38,7 +38,6 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
     tile.color = COLORS.red
   end
 
-
   self.player = MapEntity:new(self, 15, 15)
   self.grid:g(15, 15).content[self.player.id] = self.player
 end
@@ -58,22 +57,18 @@ end
 
 function Map.keypressed_up(self)
   self.player:move(0, -1)
-  game.camera:move(0 * self.tile_width, -1 * self.tile_height)
 end
 
 function Map.keypressed_right(self)
   self.player:move(1, 0)
-  game.camera:move(1 * self.tile_width, 0 * self.tile_height)
 end
 
 function Map.keypressed_down(self)
   self.player:move(0, 1)
-  game.camera:move(0 * self.tile_width, 1 * self.tile_height)
 end
 
 function Map.keypressed_left(self)
   self.player:move(-1, 0)
-  game.camera:move(-1 * self.tile_width, 0 * self.tile_height)
 end
 
 local control_map = {
@@ -100,6 +95,9 @@ end
 function Map:keypressed(key, unicode)
   local action = control_map.keyboard.on_press[key]
   if type(action) == "function" then action(self) end
+
+  local player_x, player_y = self:grid_to_world_coords(self.player.x, self.player.y)
+  game.camera:setPosition(player_x - g.getWidth() / 2, player_y - g.getHeight() / 2)
 end
 
 function Map:keyreleased(key, unicode)
