@@ -2,18 +2,19 @@ Map = class('Map', Base)
 
 function Map:initialize(x, y, width, height, tile_width, tile_height)
   Base.initialize(self)
-  local function is_num(v) return type(v) == "number" end
   assert(is_num(x) and is_num(y) and is_num(width) and is_num(height))
   assert(is_num(tile_width) and is_num(tile_width))
+
   self.x, self.y = x, y
   self.width, self.height = width, height
   self.tile_width, self.tile_height = tile_width, tile_height
 
   self.grid = Grid:new(self.width, self.height)
-  for x,y,tile in self.grid:each() do
+  for x,y,_ in self.grid:each() do
     self.grid[x][y] = MapTile:new(self, x, y)
   end
 
+  -- grid a* functions
   local function adjacency(tile)
     local adjacent = {}
     for x, y, neighbor in tile.parent.grid:each(tile.x - 1, tile.y - 1, 3, 3) do
@@ -25,7 +26,7 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   end
 
   local function cost(from, to)
-    return 1
+    return to:cost_to_move_to()
   end
 
   local function distance(from, goal)
@@ -33,13 +34,13 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   end
 
   self.grid_astar = AStar:new(adjacency, cost, distance)
-  local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
-  for index,tile in ipairs(path) do
-    tile.color = COLORS.red
-  end
+  -- local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
+  -- for index,tile in ipairs(path) do
+  --   tile.color = COLORS.red
+  -- end
 
-  self.player = MapEntity:new(self, 15, 15)
-  self.grid:g(15, 15).content[self.player.id] = self.player
+  self.player = MapEntity:new(self, 15, 15, 1, 1)
+  self.player:insert_into_grid()
 end
 
 function Map:update(dt)
@@ -97,7 +98,9 @@ function Map:keypressed(key, unicode)
   if type(action) == "function" then action(self) end
 
   local player_x, player_y = self:grid_to_world_coords(self.player.x, self.player.y)
-  game.camera:setPosition(player_x - g.getWidth() / 2, player_y - g.getHeight() / 2)
+  -- the camera movement is too annoying
+  -- needs to only adjust when it's near bounds or something
+  -- game.camera:setPosition(player_x - g.getWidth() / 2, player_y - g.getHeight() / 2)
 end
 
 function Map:keyreleased(key, unicode)

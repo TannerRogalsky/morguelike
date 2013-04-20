@@ -24,6 +24,18 @@ function MapTile:render(x, y)
   end
 end
 
+function MapTile:cost_to_move_to()
+  local cost = 0
+  for _,content in pairs(self.content) do
+    if is_func(content) then
+      cost = cost + content:cost_to_move_to()
+    elseif is_num(content) then
+      cost = cost + content.cost_to_move_to
+    end
+  end
+  return cost
+end
+
 function MapTile:mousepressed(x, y, button)
 end
 
