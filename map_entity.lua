@@ -1,23 +1,28 @@
 MapEntity = class('MapEntity', Base):include(Stateful)
 
-function MapEntity:initialize(parent, x, y, width, height)
+function MapEntity:initialize(parent, x, y, width, height, z)
   Base.initialize(self)
   assert(instanceOf(Map, parent))
   assert(is_num(x) and is_num(y))
   assert(is_num(width) or width == nil)
   assert(is_num(height) or height == nil)
+  assert(is_num(z) or z == nil)
 
   self.parent = parent
   self.x, self.y = x, y
   self.width, self.height = width or 1, height or 1
+  self.z = z or 1
 end
 
 function MapEntity:update(dt)
 end
 
-function MapEntity:render(x, y)
+function MapEntity:render()
   g.setColor(COLORS.yellow:rgb())
-  g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
+  local x, y = self.parent:grid_to_world_coords(self.x, self.y)
+  local width = self.width * self.parent.tile_width
+  local height = self.height * self.parent.tile_height
+  g.rectangle("fill", x, y, width, height)
 end
 
 function MapEntity:insert_into_grid()
@@ -44,27 +49,15 @@ function MapEntity:move(delta_x, delta_y)
   self:insert_into_grid()
 end
 
-function MapEntity:mousepressed(x, y, button)
+function MapEntity:__lt(other)
+  if self.z < other.z then return true
+  elseif self.z == other.z and self.id < other.id then return true
+  else return false
+  end
 end
 
-function MapEntity:mousereleased(x, y, button)
-end
-
-function MapEntity:keypressed(key, unicode)
-end
-
-function MapEntity:keyreleased(key, unicode)
-end
-
-function MapEntity:joystickpressed(joystick, button)
-  print(joystick, button)
-end
-
-function MapEntity:joystickreleased(joystick, button)
-  print(joystick, button)
-end
-
-function MapEntity:focus(has_focus)
+function MapEntity:__le(other)
+  return self < other
 end
 
 function MapEntity:quit()

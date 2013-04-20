@@ -18,10 +18,6 @@ function MapTile:render(x, y)
   g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
   g.setColor(COLORS.black:rgb())
   g.rectangle("line", x, y, self.parent.tile_width, self.parent.tile_height)
-
-  for _,content in pairs(self.content) do
-    content:render(x, y)
-  end
 end
 
 function MapTile:cost_to_move_to()

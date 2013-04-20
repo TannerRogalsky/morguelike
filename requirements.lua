@@ -18,7 +18,7 @@ function is_func(v) return type(v) == "function" end
 -- Put any game-wide requirements in here
 require 'lib/middleclass'
 Stateful = require 'lib/stateful'
-skiplist = require "lib/skiplist"
+Skiplist = require "lib/skiplist"
 HC = require 'lib/HardonCollider'
 inspect = require 'lib/inspect'
 require 'lib/AnAL'

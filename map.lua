@@ -9,6 +9,8 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   self.width, self.height = width, height
   self.tile_width, self.tile_height = tile_width, tile_height
 
+  self.render_queue = Skiplist.new(self.width * self.height * 3)
+
   self.grid = Grid:new(self.width, self.height)
   for x,y,_ in self.grid:each() do
     self.grid[x][y] = MapTile:new(self, x, y)
@@ -39,8 +41,8 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   --   tile.color = COLORS.red
   -- end
 
-  self.player = MapEntity:new(self, 15, 15, 1, 1)
-  self.player:insert_into_grid()
+  self.player = MapEntity:new(self, 15, 15, 2, 2)
+  self:add_entity(self.player)
 end
 
 function Map:update(dt)
@@ -50,6 +52,16 @@ function Map:render()
   for x, y, tile in self.grid:each() do
     tile:render(self:grid_to_world_coords(x, y))
   end
+
+  for index,entity in self.render_queue:ipairs() do
+    entity:render()
+  end
+end
+
+function Map:add_entity(entity)
+  assert(instanceOf(MapEntity, entity))
+  entity:insert_into_grid()
+  self.render_queue:insert(entity)
 end
 
 function Map:grid_to_world_coords(x, y)
