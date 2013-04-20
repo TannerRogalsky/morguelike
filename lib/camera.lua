@@ -46,7 +46,11 @@ function Camera:setScale(sx, sy)
 end
 
 function Camera:mousePosition()
-  return love.mouse.getX() * self.scaleX + self.x, love.mouse.getY() * self.scaleY + self.y
+  return self:world_to_camera_pos(love.mouse.getX(), love.mouse.getY())
+end
+
+function Camera:world_to_camera_pos(x, y)
+  return x * self.scaleX + self.x, y * self.scaleY + self.y
 end
 
 return Camera
