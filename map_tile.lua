@@ -15,9 +15,9 @@ end
 
 function MapTile:render(x, y)
   g.setColor(self.color:rgb())
-  g.rectangle("fill", x, y, 10, 10)
+  g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
   g.setColor(COLORS.black:rgb())
-  g.rectangle("line", x, y, 10, 10)
+  g.rectangle("line", x, y, self.parent.tile_width, self.parent.tile_height)
 
   for _,content in pairs(self.content) do
     content:render(x, y)

@@ -1,7 +1,7 @@
 local Main = Game:addState('Main')
 
 function Main:enteredState()
-  self.map = Map:new(0, 0, 70, 30, 10, 10)
+  self.map = Map:new(0, 0, 45, 30, 15, 15)
 end
 
 function Main:update(dt)
