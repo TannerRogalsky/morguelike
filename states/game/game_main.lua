@@ -4,9 +4,6 @@ function Main:enteredState()
   self.map = Map:new(0, 0, 45, 30, 15, 15)
 
   self.replay = Replay:new("test")
-
-  local r = Replay.load("test")
-  r:play(0.01)
 end
 
 function Main:update(dt)
@@ -34,6 +31,10 @@ end
 function Main:keypressed(key, unicode)
   self.replay:keypressed(key, unicode)
   self.map:keypressed(key, unicode)
+
+  if key == "r" then
+    self:gotoState("GameReplay")
+  end
 end
 
 function Main:keyreleased(key, unicode)
@@ -53,6 +54,11 @@ function Main:focus(has_focus)
 end
 
 function Main:exitedState()
+  self.replay:save()
+end
+
+function Main:quit()
+  self.replay:save()
 end
 
 return Main

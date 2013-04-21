@@ -12,16 +12,24 @@ function Replay.load(id)
   return replay
 end
 
-function Replay:play(tick)
+function Replay:play(tick, callback)
   assert(type(tick) == "number" and tick > 0)
   local action_index = 1
   self.cron_id = cron.every(tick, function()
-    love.event.push(unpack(self.action_queue[action_index]))
-    action_index = action_index + 1
     if self.action_queue[action_index] == nil then
       cron.cancel(self.cron_id)
+      self.cron_id = nil
+      local return_value = nil
+      if type(callback) == "function" then
+        return_value = callback()
+      end
+      return return_value
     end
+
+    love.event.push(unpack(self.action_queue[action_index]))
+    action_index = action_index + 1
   end)
+  return self.cron_id
 end
 
 function Replay:mousepressed(x, y, button)
