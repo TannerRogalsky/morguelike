@@ -1,4 +1,5 @@
 Map = class('Map', Base)
+Map.render_queue_depth = 3 -- this is just a best guess of how much map entities overlap
 
 function Map:initialize(x, y, width, height, tile_width, tile_height)
   Base.initialize(self)
@@ -9,22 +10,26 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   self.width, self.height = width, height
   self.tile_width, self.tile_height = tile_width, tile_height
 
-  self.render_queue = Skiplist.new(self.width * self.height * 3)
+  self.render_queue = Skiplist.new(self.width * self.height * Map.render_queue_depth)
 
   self.grid = Grid:new(self.width, self.height)
   for x,y,_ in self.grid:each() do
     self.grid[x][y] = MapTile:new(self, x, y)
   end
+  for _,_,tile in self.grid:each() do
+    for _,_,neighbor in self.grid:each(tile.x - 1, tile.y - 1, 3, 3) do
+      local dir_x, dir_y = neighbor.x - tile.x, neighbor.y - tile.y
+      local direction = Direction[dir_x][dir_y]
+
+      if direction then
+        tile.siblings[direction] = neighbor
+      end
+    end
+  end
 
   -- grid a* functions
   local function adjacency(tile)
-    local adjacent = {}
-    for x, y, neighbor in tile.parent.grid:each(tile.x - 1, tile.y - 1, 3, 3) do
-      if not(x == tile.x and y == tile.y) then
-        table.insert(adjacent, neighbor)
-      end
-    end
-    return ipairs(adjacent)
+    return pairs(tile.siblings)
   end
 
   local function cost(from, to)
@@ -36,12 +41,12 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   end
 
   self.grid_astar = AStar:new(adjacency, cost, distance)
-  -- local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
-  -- for index,tile in ipairs(path) do
-  --   tile.color = COLORS.red
-  -- end
+  local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
+  for index,tile in ipairs(path) do
+    tile.color = COLORS.red
+  end
 
-  self.player = MapEntity:new(self, 15, 15, 2, 2)
+  self.player = MapEntity:new(self, 15, 15, 3, 3)
   self:add_entity(self.player)
 end
 
@@ -58,10 +63,84 @@ function Map:render()
   end
 end
 
+-- function Map:each(x, y, width, height)
+--   x = x or 1
+--   y = y or 1
+--   width = width or self.width
+--   height = height or self.height
+--   width, height = width - 1, height - 1
+
+--   -- don't try to iterate outside of the grid bounds
+--   local x_diff, y_diff = 0, 0
+--   if x < 1 then
+--     x_diff = 1 - x
+--     x = 1
+--   end
+--   if y < 1 then
+--     y_diff = 1 - y
+--     y = 1
+--   end
+--   -- if you bump up x or y, bump down the width or height the same amount
+--   width, height = width - x_diff, height - y_diff
+--   if x + width > self.width then width = self.width - x end
+--   if y + height > self.height then height = self.height - y end
+
+
+--   local origin_tile = self.grid:g(x, y)
+--   local function iterator(state)
+--     while state.x < width do
+--       state.x = state.x + 1
+--       while state.y < height - 1 do
+--         state.y = state.y + 1
+--         local dir_x, dir_y = 0, 1
+--         local dir = Direction[dir_x][dir_y]
+--         state.current_tile = state.current_tile.siblings[dir]
+--         return state.current_tile
+--       end
+
+--       if state.x < width then
+--         dir_x, dir_y = 1, 0
+
+--         tile = origin_tile.siblings[Direction[dir_x][dir_y]]
+--         origin_tile = tile
+--         tile.content[self.id] = self
+--         print(tile)
+--       end
+
+
+--     for offset_x = 1, width do
+--       for offset_y = 1, height - 1 do
+--         dir_x, dir_y = 0, 1
+
+--         tile = tile.siblings[Direction[dir_x][dir_y]]
+--         tile.content[self.id] = self
+--         print(tile)
+--       end
+
+--       if offset_x < width then
+--         dir_x, dir_y = 1, 0
+
+--         tile = origin_tile.siblings[Direction[dir_x][dir_y]]
+--         origin_tile = tile
+--         tile.content[self.id] = self
+--         print(tile)
+--       end
+--     end
+--   end
+
+--   return iterator, {current_tile = origin_tile, x = x, y = y}
+-- end
+
 function Map:add_entity(entity)
   assert(instanceOf(MapEntity, entity))
   entity:insert_into_grid()
   self.render_queue:insert(entity)
+end
+
+function Map:remove_entity(entity)
+  assert(instanceOf(MapEntity), entity)
+  entity:remove_from_grid()
+  self.render_queue:delete(entity)
 end
 
 function Map:grid_to_world_coords(x, y)
@@ -69,19 +148,19 @@ function Map:grid_to_world_coords(x, y)
 end
 
 function Map.keypressed_up(self)
-  self.player:move(0, -1)
+  self.player:move(Direction.NORTH:unpack())
 end
 
 function Map.keypressed_right(self)
-  self.player:move(1, 0)
+  self.player:move(Direction.EAST:unpack())
 end
 
 function Map.keypressed_down(self)
-  self.player:move(0, 1)
+  self.player:move(Direction.SOUTH:unpack())
 end
 
 function Map.keypressed_left(self)
-  self.player:move(-1, 0)
+  self.player:move(Direction.WEST:unpack())
 end
 
 local control_map = {
@@ -110,6 +189,13 @@ function Map:keypressed(key, unicode)
   if type(action) == "function" then action(self) end
 
   local player_x, player_y = self:grid_to_world_coords(self.player.x, self.player.y)
+
+  if key == " " then
+    for k,v in pairs(self.grid:g(self.player.x, self.player.y).siblings) do
+      print(k.x, k.y ,v)
+    end
+    print("-------------------")
+  end
   -- the camera movement is too annoying
   -- needs to only adjust when it's near bounds or something
   -- game.camera:setPosition(player_x - g.getWidth() / 2, player_y - g.getHeight() / 2)

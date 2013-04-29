@@ -1,7 +1,7 @@
 local Main = Game:addState('Main')
 
 function Main:enteredState()
-  self.map = Map:new(0, 0, 45, 30, 15, 15)
+  self.map = Map:new(0, 0, 30, 25, 25, 25)
 
   self.replay = Replay:new("test")
 end

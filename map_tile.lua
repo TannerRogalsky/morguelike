@@ -8,6 +8,7 @@ function MapTile:initialize(parent, x, y)
 
   self.color = COLORS.green
   self.content = {}
+  self.siblings = {}
 end
 
 function MapTile:update(dt)
@@ -18,6 +19,7 @@ function MapTile:render(x, y)
   g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
   g.setColor(COLORS.black:rgb())
   g.rectangle("line", x, y, self.parent.tile_width, self.parent.tile_height)
+  g.print(self.id, x + 0, y + 0, 0, 0.6)
 end
 
 function MapTile:cost_to_move_to()
@@ -30,30 +32,4 @@ function MapTile:cost_to_move_to()
     end
   end
   return cost
-end
-
-function MapTile:mousepressed(x, y, button)
-end
-
-function MapTile:mousereleased(x, y, button)
-end
-
-function MapTile:keypressed(key, unicode)
-end
-
-function MapTile:keyreleased(key, unicode)
-end
-
-function MapTile:joystickpressed(joystick, button)
-  print(joystick, button)
-end
-
-function MapTile:joystickreleased(joystick, button)
-  print(joystick, button)
-end
-
-function MapTile:focus(has_focus)
-end
-
-function MapTile:quit()
 end

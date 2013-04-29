@@ -39,7 +39,7 @@ function AStar:find_path(start, goal)
 
     closed_set[current] = true
     -- expects and iterator in the style of ipairs
-    for index, neighbor in self.adjacency(current) do
+    for _, neighbor in self.adjacency(current) do
       local tentative_g_score = g_score[current] + self.cost(current, neighbor)
       if not (closed_set[neighbor] and tentative_g_score >= g_score[neighbor]) then
 

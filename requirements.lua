@@ -33,6 +33,7 @@ Replay = require 'lib/replay'
 
 require 'base'
 require 'game'
+require 'direction'
 require 'stats_panel'
 require 'map'
 require 'map_tile'
