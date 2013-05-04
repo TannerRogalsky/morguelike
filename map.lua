@@ -27,7 +27,7 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
     end
   end
 
-  self.grid:g(10, 10).siblings[Direction.NORTH] = self.grid:g(5, 5)
+  -- self.grid:g(10, 10).siblings[Direction.NORTH] = self.grid:g(5, 5)
 
   -- grid a* functions
   local function adjacency(tile)
@@ -43,13 +43,10 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   end
 
   self.grid_astar = AStar:new(adjacency, cost, distance)
-  local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 10))
-  for index,tile in ipairs(path) do
-    tile.color = COLORS.red
-  end
-
-  self.player = Player:new(self, 15, 15, 1, 1)
-  self:add_entity(self.player)
+  -- local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 10))
+  -- for index,tile in ipairs(path) do
+  --   tile.color = COLORS.red
+  -- end
 end
 
 function Map:update(dt)
@@ -126,6 +123,10 @@ end
 
 function Map:grid_to_world_coords(x, y)
   return (x - 1) * self.tile_width + self.x, (y - 1) * self.tile_height + self.y
+end
+
+function Map:world_to_grid_coords(x, y)
+  return math.floor(x / self.tile_width + self.x + 1), math.floor(y / self.tile_height - self.y + 1)
 end
 
 function Map.keypressed_up(self)

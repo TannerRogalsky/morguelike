@@ -2,8 +2,6 @@ local Main = Game:addState('Main')
 
 function Main:enteredState()
   self.map = Map:new(0, 0, 30, 25, 25, 25)
-
-  self.replay = Replay:new("test")
 end
 
 function Main:update(dt)
