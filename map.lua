@@ -28,8 +28,6 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
     end
   end
 
-  -- self.grid:g(10, 10).siblings[Direction.NORTH] = self.grid:g(5, 5)
-
   -- grid a* functions
   local function adjacency(tile)
     return pairs(tile.siblings)
@@ -44,10 +42,6 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   end
 
   self.grid_astar = AStar:new(adjacency, cost, distance)
-  -- local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 10))
-  -- for index,tile in ipairs(path) do
-  --   tile.color = COLORS.red
-  -- end
 end
 
 function Map:update(dt)
