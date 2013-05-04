@@ -30,7 +30,7 @@ function Menu:keypressed(key, unicode)
 
   if key == "up" then
     self.active_map_index = self.active_map_index - 1
-  elseif key == "down"
+  elseif key == "down" then
     self.active_map_index = self.active_map_index + 1
   end
 
