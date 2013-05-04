@@ -51,6 +51,7 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
 end
 
 function Map:update(dt)
+  self.player:update(dt)
 end
 
 function Map:render()

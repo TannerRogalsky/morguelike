@@ -1,7 +1,7 @@
 local Main = Game:addState('Main')
 
 function Main:enteredState()
-  -- self.map = Map:new(0, 0, 30, 25, 25, 25)
+  -- self.map = Map:new(0, 0, 14, 14, 50, 50)
   local loaded_map = table.load("test_map")
   self.map = Map:new(loaded_map.x, loaded_map.y, loaded_map.width, loaded_map.height, loaded_map.tile_width, loaded_map.tile_height)
 
@@ -26,6 +26,7 @@ function Main:enteredState()
 end
 
 function Main:update(dt)
+  self.map:update(dt)
 end
 
 function Main:render()

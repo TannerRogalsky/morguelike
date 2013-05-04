@@ -1,7 +1,7 @@
 local Editor = Game:addState('Editor')
 
 function Editor:enteredState()
-  self.map = Map:new(0, 0, 20, 20, 32, 32)
+  self.map = Map:new(0, 0, 14, 14, 50, 50)
 
   self.types = {Player, Floor, Block, Target, {name = "siblings"}}
   self.active_type_index = 1

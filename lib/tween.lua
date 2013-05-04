@@ -370,6 +370,10 @@ function tween.stop(id)
   if id~=nil then tweens[id]=nil end
 end
 
+function tween.percent(id)
+  return id.running / id.time
+end
+
 function tween.stopAll()
   tweens = {}
 end
