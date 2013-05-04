@@ -28,6 +28,12 @@ function Menu:keypressed(key, unicode)
     self.active_map_index = number_key
   end
 
+  if key == "up" then
+    self.active_map_index = self.active_map_index - 1
+  elseif key == "down"
+    self.active_map_index = self.active_map_index + 1
+  end
+
   if key == "e" then
     self:gotoState("Editor", self.maps[self.active_map_index])
   elseif key == "p" and self.maps[self.active_map_index] ~= "make new map" then
