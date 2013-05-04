@@ -27,6 +27,8 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
     end
   end
 
+  self.grid:g(10, 10).siblings[Direction.NORTH] = self.grid:g(5, 5)
+
   -- grid a* functions
   local function adjacency(tile)
     return pairs(tile.siblings)
@@ -41,12 +43,12 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   end
 
   self.grid_astar = AStar:new(adjacency, cost, distance)
-  local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 16))
+  local path = self.grid_astar:find_path(self.grid:g(1,1), self.grid:g(10, 10))
   for index,tile in ipairs(path) do
     tile.color = COLORS.red
   end
 
-  self.player = MapEntity:new(self, 15, 15, 3, 3)
+  self.player = Player:new(self, 15, 15, 1, 1)
   self:add_entity(self.player)
 end
 
@@ -63,73 +65,52 @@ function Map:render()
   end
 end
 
--- function Map:each(x, y, width, height)
---   x = x or 1
---   y = y or 1
---   width = width or self.width
---   height = height or self.height
---   width, height = width - 1, height - 1
+function Map:each(callback, x, y, width, height)
+  assert(is_func(callback))
+  x = x or 1
+  y = y or 1
+  width = width or self.width
+  height = height or self.height
+  -- width, height = width - 1, height - 1
 
---   -- don't try to iterate outside of the grid bounds
---   local x_diff, y_diff = 0, 0
---   if x < 1 then
---     x_diff = 1 - x
---     x = 1
---   end
---   if y < 1 then
---     y_diff = 1 - y
---     y = 1
---   end
---   -- if you bump up x or y, bump down the width or height the same amount
---   width, height = width - x_diff, height - y_diff
---   if x + width > self.width then width = self.width - x end
---   if y + height > self.height then height = self.height - y end
+  -- don't try to iterate outside of the grid bounds
+  local x_diff, y_diff = 0, 0
+  if x < 1 then
+    x_diff = 1 - x
+    x = 1
+  end
+  if y < 1 then
+    y_diff = 1 - y
+    y = 1
+  end
+  -- if you bump up x or y, bump down the width or height the same amount
+  width, height = width - x_diff, height - y_diff
+  if x + width > self.width then width = self.width - x end
+  if y + height > self.height then height = self.height - y end
 
+  local origin_tile =  self.grid:g(x, y)
+  local tile, grid = origin_tile, self.grid
 
---   local origin_tile = self.grid:g(x, y)
---   local function iterator(state)
---     while state.x < width do
---       state.x = state.x + 1
---       while state.y < height - 1 do
---         state.y = state.y + 1
---         local dir_x, dir_y = 0, 1
---         local dir = Direction[dir_x][dir_y]
---         state.current_tile = state.current_tile.siblings[dir]
---         return state.current_tile
---       end
+  callback(tile)
 
---       if state.x < width then
---         dir_x, dir_y = 1, 0
+  local dir_x, dir_y = 0, 0
+  for offset_x = 1, width do
+    for offset_y = 1, height - 1 do
+      dir_x, dir_y = 0, 1
 
---         tile = origin_tile.siblings[Direction[dir_x][dir_y]]
---         origin_tile = tile
---         tile.content[self.id] = self
---         print(tile)
---       end
+      tile = tile.siblings[Direction[dir_x][dir_y]]
+      callback(tile)
+    end
 
+    if offset_x < width then
+      dir_x, dir_y = 1, 0
 
---     for offset_x = 1, width do
---       for offset_y = 1, height - 1 do
---         dir_x, dir_y = 0, 1
-
---         tile = tile.siblings[Direction[dir_x][dir_y]]
---         tile.content[self.id] = self
---         print(tile)
---       end
-
---       if offset_x < width then
---         dir_x, dir_y = 1, 0
-
---         tile = origin_tile.siblings[Direction[dir_x][dir_y]]
---         origin_tile = tile
---         tile.content[self.id] = self
---         print(tile)
---       end
---     end
---   end
-
---   return iterator, {current_tile = origin_tile, x = x, y = y}
--- end
+      tile = origin_tile.siblings[Direction[dir_x][dir_y]]
+      origin_tile = tile
+      callback(tile)
+    end
+  end
+end
 
 function Map:add_entity(entity)
   assert(instanceOf(MapEntity, entity))

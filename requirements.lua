@@ -38,6 +38,7 @@ require 'stats_panel'
 require 'map'
 require 'map_tile'
 require 'map_entity'
+require 'player'
 
 local function require_all(directory)
   local lfs = love.filesystem
