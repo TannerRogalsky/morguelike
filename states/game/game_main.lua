@@ -48,6 +48,10 @@ end
 
 function Main:keypressed(key, unicode)
   self.map:keypressed(key, unicode)
+
+  if key == "backspace" then
+    self:gotoState("Menu")
+  end
 end
 
 function Main:keyreleased(key, unicode)
