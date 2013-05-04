@@ -2,6 +2,8 @@ local Menu = Game:addState('Menu')
 
 function Menu:enteredState()
   self.maps = love.filesystem.enumerate("levels")
+  table.insert(self.maps, "make new map")
+  self.active_map_index = #self.maps
 end
 
 function Menu:render()
@@ -12,6 +14,10 @@ function Menu:render()
 
   local x, y = 400, 100
   for index,map in ipairs(self.maps) do
+    g.setColor(COLORS.white:rgb())
+    if self.maps[self.active_map_index] == map then
+      g.setColor(COLORS.red:rgb())
+    end
     g.print(index .. ". " .. map, x, y + (20 * index))
   end
 end
@@ -19,13 +25,13 @@ end
 function Menu:keypressed(key, unicode)
   local number_key = tonumber(key)
   if self.maps[number_key] then
-    self:gotoState("Editor", self.maps[number_key])
+    self.active_map_index = number_key
   end
 
   if key == "e" then
-    self:gotoState("Editor")
-  elseif key == "p" then
-    self:gotoState("Main")
+    self:gotoState("Editor", self.maps[self.active_map_index])
+  elseif key == "p" and self.maps[self.active_map_index] ~= "make new map" then
+    self:gotoState("Main", self.maps[self.active_map_index])
   end
 end
 

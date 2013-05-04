@@ -1,8 +1,8 @@
 local Main = Game:addState('Main')
 
-function Main:enteredState()
+function Main:enteredState(map_to_load)
   -- self.map = Map:new(0, 0, 14, 14, 50, 50)
-  local loaded_map = table.load("test_map")
+  local loaded_map = table.load("levels/" .. map_to_load)
   self.map = Map:new(loaded_map.x, loaded_map.y, loaded_map.width, loaded_map.height, loaded_map.tile_width, loaded_map.tile_height)
 
   -- populate sibling data

@@ -1,8 +1,9 @@
 local Editor = Game:addState('Editor')
 
 function Editor:enteredState(map_to_load)
-  if map_to_load then
+  if map_to_load ~= "make new map" then
     local loaded_map = table.load("levels/" .. map_to_load)
+    self.map_name = map_to_load
     self.map = Map:new(loaded_map.x, loaded_map.y, loaded_map.width, loaded_map.height, loaded_map.tile_width, loaded_map.tile_height)
 
     -- populate sibling data
@@ -106,8 +107,13 @@ end
 
 function Editor:exitedState()
   local to_save = self.map
-  table.save(to_save, "levels/test_map")
+  if self.map_name then
+    table.save(to_save, "levels/" .. self.map_name)
+  else
+    table.save(to_save, "levels/map" .. #love.filesystem.enumerate("levels"))
+  end
 
+  self.map_name = nil
   self.map = nil
 end
 
