@@ -2,7 +2,6 @@ love.filesystem.load('requirements.lua')()
 
 function love.load()
   game = Game:new()
-  stats = StatsPanel:new()
 end
 
 function love.update(dt)
@@ -41,7 +40,6 @@ end
 
 function love.draw()
   game:render()
-  stats:render()
 end
 
 function love.focus(has_focus)

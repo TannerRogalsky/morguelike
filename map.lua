@@ -11,6 +11,7 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
   self.tile_width, self.tile_height = tile_width, tile_height
 
   self.render_queue = Skiplist.new(self.width * self.height * Map.render_queue_depth)
+  self.entity_list = {}
 
   self.grid = Grid:new(self.width, self.height)
   for x,y,_ in self.grid:each() do
@@ -112,6 +113,7 @@ end
 function Map:add_entity(entity)
   assert(instanceOf(MapEntity, entity))
   entity:insert_into_grid()
+  table.insert(self.entity_list, entity)
   self.render_queue:insert(entity)
 end
 

@@ -1,7 +1,8 @@
 StatsPanel = class('StatsPanel', Base):include(Stateful)
 
-function StatsPanel:initialize()
+function StatsPanel:initialize(parent)
   Base.initialize(self)
+  self.parent = parent
 
   self.canvas = g.newCanvas(g.getWidth() / 4, g.getHeight())
 end
@@ -14,8 +15,12 @@ function StatsPanel:render()
   g.setColor(COLORS.green:rgb())
   g.rectangle("fill", 0, 0, self.canvas:getWidth(), self.canvas:getHeight())
   g.setColor(COLORS.white:rgb())
-  local x, y = game.camera:mousePosition()
-  g.print(x .. " " .. y, 100, 100)
+  -- local x, y = game.camera:mousePosition()
+  -- g.print(x .. " " .. y, 100, 100)
+
+  g.print(self.parent.types[self.parent.active_type_index].name, 0, 0)
+  g.print(self.parent.active_direction:cardinal_name(), 0, 20)
+
   g.setCanvas()
 
   g.draw(self.canvas, g.getWidth() / 4 * 3, 0)

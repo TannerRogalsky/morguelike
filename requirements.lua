@@ -39,6 +39,9 @@ require 'map'
 require 'map_tile'
 require 'map_entity'
 require 'player'
+require 'floor'
+require 'block'
+require 'target'
 
 local function require_all(directory)
   local lfs = love.filesystem

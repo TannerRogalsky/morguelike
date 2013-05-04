@@ -10,6 +10,18 @@ function Direction:unpack()
   return self.x, self.y
 end
 
+function Direction:cardinal_name()
+  if self.x == 0 and self.y == -1 then
+    return "NORTH"
+  elseif self.x == 0 and self.y == 1 then
+    return "SOUTH"
+  elseif self.x == 1 and self.y == 0 then
+    return "EAST"
+  elseif self.x == -1 and self.y == 0 then
+    return "WEST"
+  end
+end
+
 Direction.NORTH = Direction:new(0, -1)
 Direction.SOUTH = Direction:new(0, 1)
 Direction.EAST = Direction:new(1, 0)
