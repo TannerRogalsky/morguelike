@@ -12,3 +12,6 @@ function Player:move(delta_x, delta_y)
   self.x, self.y = new_tile.x, new_tile.y
   self:insert_into_grid()
 end
+
+Player.__lt = MapEntity.__lt
+Player.__le = MapEntity.__le
