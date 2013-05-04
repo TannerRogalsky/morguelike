@@ -32,6 +32,11 @@ function Player:render()
 end
 
 function Player:move(delta_x, delta_y)
+  -- we're already tweening. don't move again
+  if self.tween_out and self.tween_in then
+    return false
+  end
+
   self:remove_from_grid()
   local current_tile = self.parent.grid:g(self.x, self.y)
   local dir = Direction[delta_x][delta_y]
@@ -50,11 +55,6 @@ function Player:move(delta_x, delta_y)
         break
       end
     end
-  end
-
-  -- we're already tweening. don't move again
-  if self.tween_out and self.tween_in then
-    can_move = false
   end
 
   if can_move then
