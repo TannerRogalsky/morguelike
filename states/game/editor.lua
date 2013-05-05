@@ -51,7 +51,7 @@ function Editor:enteredState(map_to_load)
 end
 
 function Editor:render()
-  self.map:render()
+  self.map:render(true)
   self.stats:render()
 
   local next = next

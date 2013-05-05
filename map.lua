@@ -51,12 +51,15 @@ function Map:update(dt)
   self.player:update(dt)
 end
 
-function Map:render()
+function Map:render(debug)
   g.setColor(COLORS.white:rgb())
   g.draw(self.background, 0, 0)
-  -- for x, y, tile in self.grid:each() do
-  --   tile:render(self:grid_to_world_coords(x, y))
-  -- end
+
+  if debug then
+    for x, y, tile in self.grid:each() do
+      tile:render(self:grid_to_world_coords(x, y))
+    end
+  end
 
   for index,entity in self.render_queue:ipairs() do
     entity:render()

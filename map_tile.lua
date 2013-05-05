@@ -16,7 +16,7 @@ function MapTile:update(dt)
 end
 
 function MapTile:render(x, y)
-  g.setColor(self.color:rgb())
+  g.setColor(self.color.r, self.color.g, self.color.b, 50)
   g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
   g.setColor(COLORS.black:rgb())
   g.rectangle("line", x, y, self.parent.tile_width, self.parent.tile_height)
