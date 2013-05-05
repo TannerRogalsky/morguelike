@@ -116,8 +116,10 @@ function Main:render()
 
   self.map:render()
 
-  -- g.setColor(COLORS.white:rgb())
-  -- g.print("test", 100, 100)
+  g.setColor(COLORS.white:rgb())
+  g.print("s - skip", 0, 0)
+  g.print("r - restart", 0, 20)
+  g.print("esc - menu", 0, 40)
 
   self.camera:unset()
 end
