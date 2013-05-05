@@ -38,6 +38,8 @@ function Menu:keypressed(key, unicode)
     self:gotoState("Editor", self.maps[self.active_map_index])
   elseif key == "p" and self.maps[self.active_map_index] ~= "make new map" then
     self:gotoState("Main", self.maps[self.active_map_index])
+  elseif key == "escape" then
+    love.event.quit()
   end
 end
 

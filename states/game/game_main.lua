@@ -66,7 +66,7 @@ end
 function Main:keypressed(key, unicode)
   self.map:keypressed(key, unicode)
 
-  if key == "backspace" then
+  if key == "backspace" or key == "escape" then
     self:gotoState("Menu")
   end
 end
