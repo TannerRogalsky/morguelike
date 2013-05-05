@@ -21,6 +21,10 @@ function StatsPanel:render()
   g.print(self.parent.types[self.parent.active_type_index].name, 0, 0)
   g.print(self.parent.active_direction:cardinal_name(), 0, 20)
 
+  if self.parent.delete_mode then
+    g.print("DELETE MODE ON", 0, 40, 0, 2)
+  end
+
   g.setCanvas()
 
   g.draw(self.canvas, g.getWidth() / 4 * 3, 0)

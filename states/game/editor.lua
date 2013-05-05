@@ -32,12 +32,31 @@ function Editor:enteredState(map_to_load)
   self.active_type_index = 1
   self.active_direction = Direction.NORTH
 
+  self.delete_mode = false
+
   self.stats = StatsPanel:new(self)
 end
 
 function Editor:render()
   self.map:render()
   self.stats:render()
+
+  local next = next
+
+  g.setColor(COLORS.lightblue:rgb())
+  for _,_,tile in self.map.grid:each() do
+    if next(tile.content) then
+      for direction,neighbor in pairs(tile.siblings) do
+        if next(neighbor.content) then
+          local offset_x, offset_y = self.map.tile_width / 2, self.map.tile_width / 2
+          local tile_x, tile_y = self.map:grid_to_world_coords(tile.x, tile.y)
+          local neighbor_x, neighbor_y = self.map:grid_to_world_coords(neighbor.x, neighbor.y)
+
+          g.line(tile_x + offset_x, tile_y + offset_y, neighbor_x + offset_x, neighbor_y + offset_y)
+        end
+      end
+    end
+  end
 
   if self.mousedown_pos then
     g.setColor(COLORS.blue:rgb())
@@ -50,14 +69,18 @@ function Editor:update(dt)
 end
 
 function Editor:mousepressed(x, y, button)
-  if self.types[self.active_type_index].name == "siblings" then
-    self.mousedown_pos = {}
-    self.mousedown_pos.x, self.mousedown_pos.y = love.mouse.getPosition()
-  else
+  if self.delete_mode then
     local grid_x, grid_y = self.map:world_to_grid_coords(x, y)
-    print(grid_x, grid_y)
-    local new_entity = self.types[self.active_type_index]:new(self.map, grid_x, grid_y)
-    self.map:add_entity(new_entity)
+    self:clear(grid_x, grid_y)
+  else
+    if self.types[self.active_type_index].name == "siblings" then
+      self.mousedown_pos = {}
+      self.mousedown_pos.x, self.mousedown_pos.y = love.mouse.getPosition()
+    else
+      local grid_x, grid_y = self.map:world_to_grid_coords(x, y)
+      local new_entity = self.types[self.active_type_index]:new(self.map, grid_x, grid_y)
+      self.map:add_entity(new_entity)
+    end
   end
 end
 
@@ -65,7 +88,6 @@ function Editor:mousereleased(x, y, button)
   if self.types[self.active_type_index].name == "siblings" then
     local end_tile = self.map.grid:g(self.map:world_to_grid_coords(x, y))
     local start_tile = self.map.grid:g(self.map:world_to_grid_coords(self.mousedown_pos.x, self.mousedown_pos.y))
-    print(start_tile, end_tile)
     start_tile.siblings[self.active_direction] = end_tile
 
     self.mousedown_pos = nil
@@ -87,6 +109,9 @@ local key_control_map = {
   end,
   a = function(self)
     self.active_direction = Direction.WEST
+  end,
+  delete = function(self)
+    self.delete_mode = not self.delete_mode
   end
 }
 
@@ -100,6 +125,22 @@ function Editor:keypressed(key, unicode)
 
   local action = key_control_map[key]
   if is_func(action) then action(self) end
+end
+
+function Editor:clear(x, y)
+  local tile = self.map.grid:g(x, y)
+  for id,entity in pairs(tile.content) do
+    self.map:remove_entity(entity)
+  end
+  tile.content = {}
+  for _,_,neighbor in self.map.grid:each(tile.x - 1, tile.y - 1, 3, 3) do
+    local dir_x, dir_y = neighbor.x - tile.x, neighbor.y - tile.y
+    local direction = Direction[dir_x][dir_y]
+
+    if direction then
+      tile.siblings[direction] = neighbor
+    end
+  end
 end
 
 function Editor:keyreleased(key, unicode)

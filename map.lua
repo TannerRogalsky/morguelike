@@ -113,8 +113,15 @@ function Map:add_entity(entity)
 end
 
 function Map:remove_entity(entity)
-  assert(instanceOf(MapEntity), entity)
+  assert(instanceOf(MapEntity, entity))
   entity:remove_from_grid()
+  local index = nil
+  for i,search_entity in ipairs(self.entity_list) do
+    if entity == search_entity then
+      index = i
+    end
+  end
+  if index then table.remove(self.entity_list, index) end
   self.render_queue:delete(entity)
 end
 
