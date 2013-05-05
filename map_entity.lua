@@ -19,6 +19,9 @@ end
 
 function MapEntity:render()
   if self.image then
+    g.setColor(COLORS.white:rgb())
+    local x, y = self.parent:grid_to_world_coords(self.x, self.y)
+    g.draw(self.image, x, y)
   else
     self.parent:each(function(tile)
       g.setColor(COLORS.yellow:rgb())

@@ -29,6 +29,8 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
     end
   end
 
+  self.background = game.preloaded_image["BG.png"]
+
   -- grid a* functions
   local function adjacency(tile)
     return pairs(tile.siblings)
@@ -50,9 +52,11 @@ function Map:update(dt)
 end
 
 function Map:render()
-  for x, y, tile in self.grid:each() do
-    tile:render(self:grid_to_world_coords(x, y))
-  end
+  g.setColor(COLORS.white:rgb())
+  g.draw(self.background, 0, 0)
+  -- for x, y, tile in self.grid:each() do
+  --   tile:render(self:grid_to_world_coords(x, y))
+  -- end
 
   for index,entity in self.render_queue:ipairs() do
     entity:render()

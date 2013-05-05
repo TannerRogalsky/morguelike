@@ -1,6 +1,8 @@
 local Editor = Game:addState('Editor')
 
 function Editor:enteredState(map_to_load)
+  g.setMode(1280, 700)
+
   if map_to_load ~= "make new map" then
     local loaded_map = table.load("levels/" .. map_to_load)
     self.map_name = map_to_load
@@ -180,6 +182,8 @@ function Editor:exitedState()
 
   self.map_name = nil
   self.map = nil
+
+  g.setMode(700, 700)
 end
 
 return Editor

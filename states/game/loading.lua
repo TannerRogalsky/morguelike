@@ -36,6 +36,11 @@ end
 
 function Loading:exitedState()
   self.loader = nil
+
+  self.preloaded_entities = {}
+  self.preloaded_entities["1x1"] = {}
+  table.insert(self.preloaded_entities["1x1"], self.preloaded_image["50x50_0004_tilted-box-1.png"])
+  table.insert(self.preloaded_entities["1x1"], self.preloaded_image["50x50_0005_1x1-leaking-box.png"])
 end
 
 return Loading

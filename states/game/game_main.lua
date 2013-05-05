@@ -22,6 +22,12 @@ function Main:enteredState(map_to_load)
         tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
       end
     end
+
+    if y > 2 and math.random(3) == 3 then
+      local entity = MapEntity:new(self.map, x, y)
+      entity.image = game.preloaded_entities["1x1"][math.random(#game.preloaded_entities["1x1"])]
+      self.map:add_entity(entity)
+    end
   end
 
   -- load the entities

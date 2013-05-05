@@ -4,9 +4,11 @@ function Player:initialize(parent, x, y, width, height, z)
   MapEntity.initialize(self, parent, x, y, width, height, z)
 
   self.z = 3
+  self.image = game.preloaded_image["50x50_guy.png"]
 
   self.out_pos, self.in_pos = {}, {}
   self.tween_out, self.tween_in = nil, nil
+  self.out_dir, self.in_dir = Direction.EAST, Direction.EAST
 end
 
 function Player:update(dt)
@@ -18,16 +20,27 @@ function Player:render()
 
     local x, y = self.parent:grid_to_world_coords(self.old_tile.x, self.old_tile.y)
     g.setScissor(x, y, self.parent.tile_width, self.parent.tile_height)
-    g.rectangle("fill", self.out_pos.x, self.out_pos.y, self.parent.tile_width, self.parent.tile_height)
+    self:draw_image(self.out_pos.x, self.out_pos.y, self.out_dir)
 
     x, y = self.parent:grid_to_world_coords(self.new_tile.x, self.new_tile.y)
     g.setScissor(x, y, self.parent.tile_width, self.parent.tile_height)
-    g.rectangle("fill", self.in_pos.x, self.in_pos.y, self.parent.tile_width, self.parent.tile_height)
+    self:draw_image(self.in_pos.x, self.in_pos.y, self.in_dir)
 
     g.setScissor()
   else
     local x, y = self.parent:grid_to_world_coords(self.x, self.y)
-    g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
+    self:draw_image(x, y, self.in_dir)
+  end
+end
+
+function Player:draw_image(x, y, direction)
+  g.setColor(COLORS.white:rgb())
+  if direction == Direction.EAST then
+    g.draw(self.image, x, y, 0, direction.x, 1)
+  elseif direction == Direction.WEST then
+    g.draw(self.image, x, y, 0, direction.x, 1, self.parent.tile_width)
+  else
+    g.draw(self.image, x, y)
   end
 end
 
@@ -75,6 +88,9 @@ function Player:move(delta_x, delta_y)
     local target_in = {}
     target_in.x, target_in.y = self.parent:grid_to_world_coords(self.new_tile.x, self.new_tile.y)
     self.tween_in = tween(tween_speed, self.in_pos, target_in, "linear", function() self.tween_in = nil end)
+
+    self.out_dir = dir
+    self.in_dir = secondary_dir
   end
 
   self:insert_into_grid()

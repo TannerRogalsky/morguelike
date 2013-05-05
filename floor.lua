@@ -2,14 +2,15 @@ Floor = class('Floor', MapEntity)
 
 function Floor:initialize(parent, x, y, width, height, z)
   MapEntity.initialize(self, parent, x, y, width, height, z)
+
+  self.image = game.preloaded_image["50x50_0003_concrete-square.png"]
+  self.z = 1
 end
 
 function Floor:render()
-  self.parent:each(function(tile)
-    g.setColor(COLORS.white:rgb())
-    local x, y = self.parent:grid_to_world_coords(tile.x, tile.y)
-    g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
-  end, self.x, self.y, self.width, self.height)
+  local x, y = self.parent:grid_to_world_coords(self.x, self.y)
+  g.setColor(COLORS.white:rgb())
+  g.draw(self.image, x, y)
 end
 
 Floor.__lt = MapEntity.__lt
