@@ -14,14 +14,14 @@ function Editor:enteredState(map_to_load)
       for direction_data,sibling_data in pairs(loaded_map.grid[x][y].siblings) do
         local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
         tile.siblings[Direction[direction_data.x][direction_data.y]] = sibling
-        tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
+        tile.secondary_directions[Direction[direction_data.x][direction_data.y]] = Direction[direction_data.x][direction_data.y]
       end
 
       if loaded_map.grid[x][y].secondary_directions then
         tile.secondary_directions = {}
         for sibling_data,direction_data in pairs(loaded_map.grid[x][y].secondary_directions) do
           local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
-          tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
+          tile.secondary_directions[Direction[direction_data.x][direction_data.y]] = Direction[direction_data.x][direction_data.y]
         end
       end
     end
@@ -102,7 +102,7 @@ function Editor:mousereleased(x, y, button)
     local end_tile = self.map.grid:g(self.map:world_to_grid_coords(x, y))
     local start_tile = self.map.grid:g(self.map:world_to_grid_coords(self.mousedown_pos.x, self.mousedown_pos.y))
     start_tile.siblings[self.active_direction] = end_tile
-    start_tile.secondary_directions[end_tile] = self.active_secondary_direction
+    start_tile.secondary_directions[self.active_direction] = self.active_secondary_direction
 
     self.mousedown_pos = nil
   end
@@ -165,7 +165,7 @@ function Editor:clear(x, y)
 
     if direction then
       tile.siblings[direction] = neighbor
-      tile.secondary_directions[neighbor] = direction
+      tile.secondary_directions[direction] = direction
     end
   end
 end

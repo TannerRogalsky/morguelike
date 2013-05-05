@@ -54,13 +54,13 @@ function Player:move(delta_x, delta_y)
   local current_tile = self.parent.grid:g(self.x, self.y)
   local dir = Direction[delta_x][delta_y]
   local new_tile = current_tile.siblings[dir]
-  local secondary_dir = current_tile.secondary_directions[new_tile]
-  print("***********")
-  print(dir:cardinal_name(), secondary_dir:cardinal_name())
-  print(current_tile, new_tile)
-  for k,v in pairs(current_tile.secondary_directions) do
-    print(k,v:cardinal_name())
-  end
+  local secondary_dir = current_tile.secondary_directions[dir] or dir
+  -- print("***********")
+  -- print(dir:cardinal_name(), secondary_dir:cardinal_name())
+  -- print(current_tile, new_tile)
+  -- for k,v in pairs(current_tile.secondary_directions) do
+  --   print(k,v:cardinal_name())
+  -- end
 
   -- successful move
   local can_move = false

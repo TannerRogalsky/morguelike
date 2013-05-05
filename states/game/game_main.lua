@@ -14,7 +14,7 @@ function Main:enteredState(map_to_load)
     for direction_data,sibling_data in pairs(loaded_map.grid[x][y].siblings) do
       local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
       tile.siblings[Direction[direction_data.x][direction_data.y]] = sibling
-      tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
+      tile.secondary_directions[Direction[direction_data.x][direction_data.y]] = Direction[direction_data.x][direction_data.y]
 
       local euclidean_sibling = self.map.grid:g(tile.x + direction_data.x, tile.y + direction_data.y)
 
@@ -27,7 +27,7 @@ function Main:enteredState(map_to_load)
       tile.secondary_directions = {}
       for sibling_data,direction_data in pairs(loaded_map.grid[x][y].secondary_directions) do
         local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
-        tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
+        tile.secondary_directions[Direction[direction_data.x][direction_data.y]] = Direction[direction_data.x][direction_data.y]
       end
     end
   end

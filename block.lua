@@ -58,7 +58,7 @@ function Block:move(delta_x, delta_y)
   local current_tile = self.parent.grid:g(self.x, self.y)
   local dir = Direction[delta_x][delta_y]
   local new_tile = current_tile.siblings[dir]
-  local secondary_dir = current_tile.secondary_directions[new_tile]
+  local secondary_dir = current_tile.secondary_directions[dir]
 
   local can_move = false
   for id,entity in pairs(new_tile.content) do
