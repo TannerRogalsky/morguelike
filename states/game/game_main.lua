@@ -34,7 +34,9 @@ function Main:enteredState(map_to_load)
 
   for id,tile in pairs(noneuclidean_tiles) do
     local entity = MapEntity:new(self.map, tile.x, tile.y)
-    entity.image = game.preloaded_image["50x50_0001_darkened-tile.png"]
+    local num = math.random(5)
+    local image = self.preloaded_image[self.preloaded_entities.cracks[num]]
+    entity.image = image
     entity.z = 2
     self.map:add_entity(entity)
   end

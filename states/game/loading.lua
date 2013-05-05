@@ -46,9 +46,19 @@ function Loading:exitedState()
   table.insert(self.preloaded_entities["1x1"], self.preloaded_image["50x50_0005_1x1-leaking-box.png"])
 
   table.insert(self.preloaded_entities["1x2"], self.preloaded_image["50x100__0001_tall-box-TOP.png"])
+  table.insert(self.preloaded_entities["1x2"], self.preloaded_image["100x50__0002_tall-box-goat.png"])
   table.insert(self.preloaded_entities["2x1"], self.preloaded_image["100x50__0002_2x1-box.png"])
   table.insert(self.preloaded_entities["2x2"], self.preloaded_image["100x100__0000_background-boxe.png"])
   table.insert(self.preloaded_entities["2x2"], self.preloaded_image["100x100__0003_large-covered.png"])
+  table.insert(self.preloaded_entities["2x2"], self.preloaded_image["100x100__0000_background-box2.png"])
+  table.insert(self.preloaded_entities["2x2"], self.preloaded_image["100x100__0001_metal-covered-b.png"])
+
+  self.preloaded_entities.cracks = {}
+  table.insert(self.preloaded_entities.cracks, "50x50__0000_cracks-5.png")
+  table.insert(self.preloaded_entities.cracks, "50x50__0001_cracks-4.png")
+  table.insert(self.preloaded_entities.cracks, "50x50__0002_cracks-3.png")
+  table.insert(self.preloaded_entities.cracks, "50x50__0003_cracks-2.png")
+  table.insert(self.preloaded_entities.cracks, "50x50__0004_cracks-1.png")
 end
 
 return Loading
