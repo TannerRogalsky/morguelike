@@ -24,6 +24,9 @@ function Block:initialize(parent, x, y, width, height, z)
   self.scr4 = love.audio.newSource("sounds/scrape4.ogg", "static")
   self.scr4:setVolume(0.2)
   scrape = 0
+
+  self.chime = love.audio.newSource("sounds/success.ogg", "static")
+  self.chime:setVolume(0.12)
 end
 
 function Block:draw_image(x, y, direction)
@@ -81,8 +84,7 @@ local function block_moved(self)
   if all_blocks_on_targets then
     -- level over
     print("YOU JUST WON. YOU JUST WON THE GAME. YOU JUST WON. YOU JUST WON THE GAME.")
-    game.active_map_index = game.active_map_index + 1
-    game:gotoState("Main", game.maps[game.active_map_index])
+    game:gotoState("Menu")
   end
 end
 
@@ -102,6 +104,8 @@ function Block:move(delta_x, delta_y)
       break
     elseif instanceOf(Target, entity) then
       can_move = true
+      love.audio.play(self.chime)
+      love.audio.rewind(self.chime)
     end
   end
 
