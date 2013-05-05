@@ -58,6 +58,7 @@ function Block:move(delta_x, delta_y)
   local current_tile = self.parent.grid:g(self.x, self.y)
   local dir = Direction[delta_x][delta_y]
   local new_tile = current_tile.siblings[dir]
+  local secondary_dir = current_tile.secondary_directions[new_tile]
 
   local can_move = false
   for id,entity in pairs(new_tile.content) do
@@ -90,7 +91,7 @@ function Block:move(delta_x, delta_y)
     self.tween_out = tween(tween_speed, self.out_pos, target_out, "linear", function() self.tween_out = nil end)
 
     self.in_pos = {}
-    self.in_pos.x, self.in_pos.y = self.parent:grid_to_world_coords(self.new_tile.x - delta_x, self.new_tile.y - delta_y)
+    self.in_pos.x, self.in_pos.y = self.parent:grid_to_world_coords(self.new_tile.x - secondary_dir.x, self.new_tile.y - secondary_dir.y)
     local target_in = {}
     target_in.x, target_in.y = self.parent:grid_to_world_coords(self.new_tile.x, self.new_tile.y)
     self.tween_in = tween(tween_speed, self.in_pos, target_in, "linear", function() self.tween_in = nil end)
