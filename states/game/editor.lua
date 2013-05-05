@@ -85,7 +85,7 @@ function Editor:mousepressed(x, y, button)
 end
 
 function Editor:mousereleased(x, y, button)
-  if self.types[self.active_type_index].name == "siblings" then
+  if self.mousedown_pos then
     local end_tile = self.map.grid:g(self.map:world_to_grid_coords(x, y))
     local start_tile = self.map.grid:g(self.map:world_to_grid_coords(self.mousedown_pos.x, self.mousedown_pos.y))
     start_tile.siblings[self.active_direction] = end_tile
