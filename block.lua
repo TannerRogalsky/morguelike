@@ -42,13 +42,14 @@ local function block_moved(self)
   for index,entity in ipairs(self.parent.entity_list) do
     if instanceOf(Block, entity) then
       all_blocks_on_targets = entity:is_on_target()
+      if all_blocks_on_targets == false then break end
     end
   end
 
   if all_blocks_on_targets then
     -- level over
     print("YOU JUST WON. YOU JUST WON THE GAME. YOU JUST WON. YOU JUST WON THE GAME.")
-    -- game:gotoState("Menu")
+    game:gotoState("Menu")
   end
 end
 
