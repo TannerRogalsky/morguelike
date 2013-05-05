@@ -2,8 +2,8 @@ local Menu = Game:addState('Menu')
 
 function Menu:enteredState()
   self.maps = love.filesystem.enumerate("levels")
-  table.insert(self.maps, "make new map")
-  self.active_map_index = #self.maps
+  -- table.insert(self.maps, "make new map")
+  self.active_map_index = 1
 
   love.audio.stop(mainmusic)
   love.audio.play(menumusic)
@@ -47,7 +47,6 @@ function Menu:keypressed(key, unicode)
 end
 
 function Menu:exitedState()
-  self.maps = nil
 end
 
 return Menu

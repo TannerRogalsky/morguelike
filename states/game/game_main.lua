@@ -1,6 +1,11 @@
 local Main = Game:addState('Main')
 
 function Main:enteredState(map_to_load)
+  if map_to_load == nil then
+    self:gotoState("Menu")
+    return
+  end
+
   local loaded_map = table.load("levels/" .. map_to_load)
   local x = (g.getWidth() / 2) - (loaded_map.width * loaded_map.tile_width / 2)
   local y = (g.getHeight() / 2) - (loaded_map.height * loaded_map.tile_height / 2)
@@ -128,6 +133,11 @@ function Main:keypressed(key, unicode)
 
   if key == "backspace" or key == "escape" then
     self:gotoState("Menu")
+  elseif key == "s" then
+    game.active_map_index = game.active_map_index + 1
+    game:gotoState("Main", game.maps[game.active_map_index])
+  elseif key == "r" then
+    game:gotoState("Main", game.maps[game.active_map_index])
   end
 end
 

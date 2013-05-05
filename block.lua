@@ -81,7 +81,8 @@ local function block_moved(self)
   if all_blocks_on_targets then
     -- level over
     print("YOU JUST WON. YOU JUST WON THE GAME. YOU JUST WON. YOU JUST WON THE GAME.")
-    game:gotoState("Menu")
+    game.active_map_index = game.active_map_index + 1
+    game:gotoState("Main", game.maps[game.active_map_index])
   end
 end
 
