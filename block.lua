@@ -7,6 +7,16 @@ function Block:initialize(parent, x, y, width, height, z)
 
   self.out_pos, self.in_pos = {}, {}
   self.tween_out, self.tween_in = nil, nil
+
+  scr1 = love.audio.newSource("sounds/scrape1.ogg", "static")
+  scr1:setVolume(0.2)
+  scr2 = love.audio.newSource("sounds/scrape2.ogg", "static")
+  scr2:setVolume(0.2)
+  scr3 = love.audio.newSource("sounds/scrape3.ogg", "static")
+  scr3:setVolume(0.2)
+  scr4 = love.audio.newSource("sounds/scrape4.ogg", "static")
+  scr4:setVolume(0.2)
+  scrape = 0
 end
 
 function Block:is_on_target()
@@ -97,6 +107,24 @@ function Block:move(delta_x, delta_y)
     self.tween_in = tween(tween_speed, self.in_pos, target_in, "linear", function() self.tween_in = nil end)
 
     cron.after(tween_speed, block_moved, self)
+
+    if scrape == 0 then  
+      love.audio.play(scr1)
+      love.audio.rewind(scr1)
+      scrape = scrape + 1
+    elseif scrape == 1 then
+      love.audio.play(scr2)
+      love.audio.rewind(scr2)
+      scrape = scrape + 1
+    elseif scrape == 2 then
+      love.audio.play(scr3)
+      love.audio.rewind(scr3)
+      scrape = scrape + 1
+    elseif scrape == 3 then
+      love.audio.play(scr4)
+      love.audio.rewind(scr4)
+      scrape = 0 
+    end
   end
 
   self:insert_into_grid()
