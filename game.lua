@@ -10,6 +10,13 @@ function Game:initialize()
   g.setFont(self.font)
 
   self:gotoState("Loading")
+
+  menumusic = love.audio.newSource("sounds/More_Imaginings.ogg")
+  menumusic:setVolume(0.4)
+  menumusic:setLooping(true)
+  mainmusic = love.audio.newSource("sounds/Where_House.ogg")
+  mainmusic:setVolume(0.15)
+  mainmusic:setLooping(true)
 end
 
 function Game:update(dt)

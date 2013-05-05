@@ -50,6 +50,9 @@ function Main:enteredState(map_to_load)
     if instanceOf(Player, entity) then
       self.map.player = entity
     end
+
+    love.audio.stop(menumusic)
+    love.audio.play(mainmusic)
   end
 
   for x, y, tile in self.map.grid:each(1, 3, self.map.width - 1, self.map.height - 3) do
