@@ -19,7 +19,8 @@ function StatsPanel:render()
   -- g.print(x .. " " .. y, 100, 100)
 
   g.print(self.parent.types[self.parent.active_type_index].name, 0, 0)
-  g.print(self.parent.active_direction:cardinal_name(), 0, 20)
+  g.print("primary: " .. self.parent.active_direction:cardinal_name(), 0, 20)
+  g.print("secondary: " .. self.parent.active_secondary_direction:cardinal_name(), 150, 20)
 
   if self.parent.delete_mode then
     g.print("DELETE MODE ON", 0, 40, 0, 2)

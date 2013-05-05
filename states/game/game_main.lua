@@ -12,6 +12,14 @@ function Main:enteredState(map_to_load)
     for direction_data,sibling_data in pairs(loaded_map.grid[x][y].siblings) do
       tile.siblings[Direction[direction_data.x][direction_data.y]] = self.map.grid:g(sibling_data.x, sibling_data.y)
     end
+
+    if loaded_map.grid[x][y].secondary_directions then
+      tile.secondary_directions = {}
+      for sibling_data,direction_data in pairs(loaded_map.grid[x][y].secondary_directions) do
+        local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
+        tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
+      end
+    end
   end
 
   -- load the entities

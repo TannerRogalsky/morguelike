@@ -9,6 +9,7 @@ function MapTile:initialize(parent, x, y)
   self.color = COLORS.green
   self.content = {}
   self.siblings = {}
+  self.secondary_directions = {}
 end
 
 function MapTile:update(dt)

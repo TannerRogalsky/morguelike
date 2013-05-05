@@ -24,6 +24,7 @@ function Map:initialize(x, y, width, height, tile_width, tile_height)
 
       if direction then
         tile.siblings[direction] = neighbor
+        tile.secondary_directions[neighbor] = direction
       end
     end
   end

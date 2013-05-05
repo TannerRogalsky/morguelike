@@ -12,6 +12,14 @@ function Editor:enteredState(map_to_load)
       for direction_data,sibling_data in pairs(loaded_map.grid[x][y].siblings) do
         tile.siblings[Direction[direction_data.x][direction_data.y]] = self.map.grid:g(sibling_data.x, sibling_data.y)
       end
+
+      if loaded_map.grid[x][y].secondary_directions then
+        tile.secondary_directions = {}
+        for sibling_data,direction_data in pairs(loaded_map.grid[x][y].secondary_directions) do
+          local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
+          tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
+        end
+      end
     end
 
     -- load the entities
@@ -31,6 +39,7 @@ function Editor:enteredState(map_to_load)
   self.types = {Player, Floor, Block, Target, {name = "siblings"}}
   self.active_type_index = 1
   self.active_direction = Direction.NORTH
+  self.active_secondary_direction = Direction.NORTH
 
   self.delete_mode = false
 
@@ -89,6 +98,7 @@ function Editor:mousereleased(x, y, button)
     local end_tile = self.map.grid:g(self.map:world_to_grid_coords(x, y))
     local start_tile = self.map.grid:g(self.map:world_to_grid_coords(self.mousedown_pos.x, self.mousedown_pos.y))
     start_tile.siblings[self.active_direction] = end_tile
+    start_tile.secondary_directions[end_tile] = self.active_secondary_direction
 
     self.mousedown_pos = nil
   end
@@ -109,6 +119,18 @@ local key_control_map = {
   end,
   a = function(self)
     self.active_direction = Direction.WEST
+  end,
+  up = function(self)
+    self.active_secondary_direction = Direction.NORTH
+  end,
+  down = function(self)
+    self.active_secondary_direction = Direction.SOUTH
+  end,
+  right = function(self)
+    self.active_secondary_direction = Direction.EAST
+  end,
+  left = function(self)
+    self.active_secondary_direction = Direction.WEST
   end,
   delete = function(self)
     self.delete_mode = not self.delete_mode
