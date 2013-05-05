@@ -9,7 +9,7 @@ function Game:initialize()
   self.font = g.newFont(16)
   g.setFont(self.font)
 
-  self:gotoState("Menu")
+  self:gotoState("Loading")
 end
 
 function Game:update(dt)
