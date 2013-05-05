@@ -9,6 +9,21 @@ function Player:initialize(parent, x, y, width, height, z)
   self.out_pos, self.in_pos = {}, {}
   self.tween_out, self.tween_in = nil, nil
   self.out_dir, self.in_dir = Direction.EAST, Direction.EAST
+
+  footstep1 = love.audio.newSource("sounds/stepa.ogg", "static")
+  footstep1:setVolume(0.2)
+  footstep2 = love.audio.newSource("sounds/stepb.ogg", "static")
+  footstep2:setVolume(0.2)
+  transport = love.audio.newSource("sounds/transport.ogg", "static")
+  movefail1 = love.audio.newSource("sounds/Ooof_1.ogg", "static")
+  movefail1:setVolume(0.1)
+  movefail2 = love.audio.newSource("sounds/Ooof_2.ogg", "static")
+  movefail2:setVolume(0.1)  
+  movefail3 = love.audio.newSource("sounds/Ooof_3.ogg", "static")
+  movefail3:setVolume(0.1)
+
+  step = 0
+  fail = 0
 end
 
 function Player:update(dt)
@@ -72,6 +87,19 @@ function Player:move(delta_x, delta_y)
       can_move = block_can_move
 
       if can_move == false then
+        if fail == 0 then  
+            love.audio.play(movefail1)
+            love.audio.rewind(movefail1)
+            fail = fail + 1
+          elseif fail == 1 then
+            love.audio.play(movefail2)
+            love.audio.rewind(movefail2)
+            fail = fail + 1
+          elseif fail == 2 then
+            love.audio.play(movefail3)
+            love.audio.rewind(movefail3)
+            fail = 0
+        end
         break
       end
     end
@@ -97,6 +125,16 @@ function Player:move(delta_x, delta_y)
 
     self.out_dir = dir
     self.in_dir = secondary_dir
+
+  if step == 0 then  
+    love.audio.play(footstep1)
+    love.audio.rewind(footstep1)
+    step = step + 1
+  else
+    love.audio.play(footstep2)
+    love.audio.rewind(footstep2)
+    step = step - 1
+ end
   end
 
   self:insert_into_grid()

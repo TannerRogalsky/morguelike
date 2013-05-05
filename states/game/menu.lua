@@ -4,6 +4,9 @@ function Menu:enteredState()
   self.maps = love.filesystem.enumerate("levels")
   table.insert(self.maps, "make new map")
   self.active_map_index = #self.maps
+
+  love.audio.stop(mainmusic)
+  love.audio.play(menumusic)
 end
 
 function Menu:render()
