@@ -44,7 +44,7 @@ function Loading:exitedState()
   self.preloaded_entities["2x2"] = {}
   table.insert(self.preloaded_entities["1x1"], self.preloaded_image["50x50_0004_tilted-box-1.png"])
   table.insert(self.preloaded_entities["1x1"], self.preloaded_image["50x50_0005_1x1-leaking-box.png"])
-
+  table.insert(self.preloaded_entities["1x1"], self.preloaded_image["50x50__0005_tilted-box-2.png"])
   table.insert(self.preloaded_entities["1x2"], self.preloaded_image["50x100__0001_tall-box-TOP.png"])
   table.insert(self.preloaded_entities["1x2"], self.preloaded_image["100x50__0002_tall-box-goat.png"])
   table.insert(self.preloaded_entities["2x1"], self.preloaded_image["100x50__0002_2x1-box.png"])
