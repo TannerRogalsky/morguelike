@@ -165,6 +165,7 @@ function Editor:clear(x, y)
 
     if direction then
       tile.siblings[direction] = neighbor
+      tile.secondary_directions[neighbor] = direction
     end
   end
 end

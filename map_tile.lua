@@ -15,6 +15,14 @@ end
 function MapTile:update(dt)
 end
 
+function MapTile:has_content()
+  if next(self.content) then
+    return true
+  else
+    return false
+  end
+end
+
 function MapTile:render(x, y)
   g.setColor(self.color.r, self.color.g, self.color.b, 50)
   g.rectangle("fill", x, y, self.parent.tile_width, self.parent.tile_height)
