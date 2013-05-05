@@ -109,7 +109,7 @@ end
 function Main:render()
   self.camera:set()
 
-  self.map:render(true)
+  self.map:render()
 
   -- g.setColor(COLORS.white:rgb())
   -- g.print("test", 100, 100)

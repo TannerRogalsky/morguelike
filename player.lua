@@ -3,30 +3,43 @@ Player = class('Player', MapEntity)
 function Player:initialize(parent, x, y, width, height, z)
   MapEntity.initialize(self, parent, x, y, width, height, z)
 
-  self.z = 3
+  self.z = 5
   self.image = game.preloaded_image["50x50_guy.png"]
+  self.front_animation = newAnimation(game.preloaded_image["char_front_nohandle.png"], 50, 50, 0.2, 4)
+  self.side_animation = newAnimation(game.preloaded_image["char_side.png"], 50, 50, 0.2, 4)
+  self.back_animation = newAnimation(game.preloaded_image["char_back.png"], 50, 50, 0.2, 4)
+
+  self.animations = {}
+  self.animations[Direction.NORTH] = self.back_animation
+  self.animations[Direction.SOUTH] = self.front_animation
+  self.animations[Direction.EAST] = self.side_animation
+  self.animations[Direction.WEST] = self.side_animation
+
+  self.animation = self.side_animation
 
   self.out_pos, self.in_pos = {}, {}
   self.tween_out, self.tween_in = nil, nil
   self.out_dir, self.in_dir = Direction.EAST, Direction.EAST
 
-  footstep1 = love.audio.newSource("sounds/stepa.ogg", "static")
-  footstep1:setVolume(0.2)
-  footstep2 = love.audio.newSource("sounds/stepb.ogg", "static")
-  footstep2:setVolume(0.2)
-  transport = love.audio.newSource("sounds/transport.ogg", "static")
-  movefail1 = love.audio.newSource("sounds/Ooof_1.ogg", "static")
-  movefail1:setVolume(0.1)
-  movefail2 = love.audio.newSource("sounds/Ooof_2.ogg", "static")
-  movefail2:setVolume(0.1)  
-  movefail3 = love.audio.newSource("sounds/Ooof_3.ogg", "static")
-  movefail3:setVolume(0.1)
+  self.footstep1 = love.audio.newSource("sounds/stepa.ogg", "static")
+  self.footstep1:setVolume(0.2)
+  self.footstep2 = love.audio.newSource("sounds/stepb.ogg", "static")
+  self.footstep2:setVolume(0.2)
+  self.movefail1 = love.audio.newSource("sounds/Ooof_1.ogg", "static")
+  self.movefail1:setVolume(0.1)
+  self.movefail2 = love.audio.newSource("sounds/Ooof_2.ogg", "static")
+  self.movefail2:setVolume(0.1)
+  self.movefail3 = love.audio.newSource("sounds/Ooof_3.ogg", "static")
+  self.movefail3:setVolume(0.1)
 
   step = 0
   fail = 0
 end
 
 function Player:update(dt)
+  for dir,animation in pairs(self.animations) do
+    animation:update(dt)
+  end
 end
 
 function Player:render()
@@ -51,9 +64,13 @@ end
 function Player:draw_image(x, y, direction)
   g.setColor(COLORS.white:rgb())
   if direction == Direction.EAST then
-    g.draw(self.image, x, y, 0, direction.x, 1)
+    self.animations[direction]:draw(x, y)
   elseif direction == Direction.WEST then
-    g.draw(self.image, x, y, 0, direction.x, 1, self.parent.tile_width)
+    self.animations[direction]:draw(x, y, 0, direction.x, 1, self.parent.tile_width)
+  elseif direction == Direction.NORTH then
+    self.animations[direction]:draw(x, y)
+  elseif direction == Direction.SOUTH then
+    self.animations[direction]:draw(x, y)
   else
     g.draw(self.image, x, y)
   end
@@ -69,6 +86,7 @@ function Player:move(delta_x, delta_y)
   local current_tile = self.parent.grid:g(self.x, self.y)
   local dir = Direction[delta_x][delta_y]
   local new_tile = current_tile.siblings[dir]
+  --  the 'or dir' part of this is a major bandaid and should absolutely not be necessary
   local secondary_dir = current_tile.secondary_directions[dir] or dir
   -- print("***********")
   -- print(dir:cardinal_name(), secondary_dir:cardinal_name())
@@ -87,17 +105,17 @@ function Player:move(delta_x, delta_y)
       can_move = block_can_move
 
       if can_move == false then
-        if fail == 0 then  
-            love.audio.play(movefail1)
-            love.audio.rewind(movefail1)
+        if fail == 0 then
+            love.audio.play(self.movefail1)
+            love.audio.rewind(self.movefail1)
             fail = fail + 1
           elseif fail == 1 then
-            love.audio.play(movefail2)
-            love.audio.rewind(movefail2)
+            love.audio.play(self.movefail2)
+            love.audio.rewind(self.movefail2)
             fail = fail + 1
           elseif fail == 2 then
-            love.audio.play(movefail3)
-            love.audio.rewind(movefail3)
+            love.audio.play(self.movefail3)
+            love.audio.rewind(self.movefail3)
             fail = 0
         end
         break
@@ -126,13 +144,13 @@ function Player:move(delta_x, delta_y)
     self.out_dir = dir
     self.in_dir = secondary_dir
 
-  if step == 0 then  
-    love.audio.play(footstep1)
-    love.audio.rewind(footstep1)
+  if step == 0 then
+    love.audio.play(self.footstep1)
+    love.audio.rewind(self.footstep1)
     step = step + 1
   else
-    love.audio.play(footstep2)
-    love.audio.rewind(footstep2)
+    love.audio.play(self.footstep2)
+    love.audio.rewind(self.footstep2)
     step = step - 1
  end
   end

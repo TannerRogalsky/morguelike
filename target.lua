@@ -4,6 +4,8 @@ function Target:initialize(parent, x, y, width, height, z)
   MapEntity.initialize(self, parent, x, y, width, height, z)
 
   self.image = game.preloaded_image["50x50_0000_marker.png"]
+
+  self.z = 3
 end
 
 function Target:render()
