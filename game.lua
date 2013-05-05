@@ -12,7 +12,7 @@ function Game:initialize()
   self:gotoState("Loading")
 
   menumusic = love.audio.newSource("sounds/More_Imaginings.ogg")
-  menumusic:setVolume(0.2)
+  menumusic:setVolume(0.4)
   menumusic:setLooping(true)
   mainmusic = love.audio.newSource("sounds/Where_House.ogg")
   mainmusic:setVolume(0.15)
