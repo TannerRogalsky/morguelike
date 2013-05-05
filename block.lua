@@ -86,7 +86,6 @@ local function block_moved(self)
     print("YOU JUST WON. YOU JUST WON THE GAME. YOU JUST WON. YOU JUST WON THE GAME.")
     game.active_map_index = game.active_map_index + 1
     game:gotoState("Main", game.maps[game.active_map_index])
-    game:gotoState("Menu")
   end
 end
 
