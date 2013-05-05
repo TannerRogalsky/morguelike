@@ -10,7 +10,9 @@ function Main:enteredState(map_to_load)
   for x,y,tile in self.map.grid:each() do
     tile.siblings = {}
     for direction_data,sibling_data in pairs(loaded_map.grid[x][y].siblings) do
-      tile.siblings[Direction[direction_data.x][direction_data.y]] = self.map.grid:g(sibling_data.x, sibling_data.y)
+      local sibling = self.map.grid:g(sibling_data.x, sibling_data.y)
+      tile.siblings[Direction[direction_data.x][direction_data.y]] = sibling
+      tile.secondary_directions[sibling] = Direction[direction_data.x][direction_data.y]
     end
 
     if loaded_map.grid[x][y].secondary_directions then
